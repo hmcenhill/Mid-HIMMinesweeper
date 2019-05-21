@@ -6,7 +6,12 @@ namespace Mid_HIMMinesweeper
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            var minesweeper = new Minesweeper();
+            minesweeper.Run();
+
+            Console.WriteLine("\n\n-----------------------------------");
+            Console.WriteLine("End of demo. Press any key to exit.");
+            Console.ReadKey();
         }
     }
 }
