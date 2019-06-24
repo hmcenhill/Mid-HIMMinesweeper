@@ -12,9 +12,9 @@ namespace Mid_HIMMinesweeper
         public Char[,] Field { get; set; }
         public Char[,] VisibleField { get; set; }
 
-        public Minefield(Difficulty difficulty)
+        public Minefield()
         {
-            switch (difficulty)
+            switch ((Difficulty)(Workflow.GetInt("Choose Difficulty:\n1-Easy   2-Medium   3-Hard   4-Custom:", 1, 4) - 1))
             {
                 case Difficulty.Easy:
                     Height = 9; Width = 9; MineCount = 10;
@@ -50,6 +50,40 @@ namespace Mid_HIMMinesweeper
                         break;
                     }
                 }
+            }
+            for(var i=0; i<Field.GetLength(0); i++)
+            {
+                for(var j=0;j<Field.GetLength(1); j++)
+                {
+                    if (Field[i,j] == '*') continue;
+                    Field[i,j] = CountNeighbors(i,j);
+                }
+            }
+        }
+        private Char CountNeighbors(int x, int y)
+        {
+            var counter = 0;
+            for(var i = -1; i <= 1; i++)
+            {
+                for(var j = -1; j <= 1; j++)
+                {
+                    if (x + i < 0 || x + i >= Field.GetLength(0) || y + j < 0 || y + j >= Field.GetLength(1) || (i == 0 && j == 0))
+                    {
+                        continue;
+                    }
+                    else if (Field[x + i, y + j] == '*')
+                    {
+                        counter++;
+                    }
+                }
+            }
+            if(counter == 0)
+            {
+                return ' ';
+            }
+            else
+            {
+                return counter.ToString().ToCharArray()[0];
             }
         }
         public void DisplayField()

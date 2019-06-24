@@ -8,7 +8,7 @@ namespace Mid_HIMMinesweeper
     {
         public void Run()
         {
-            var field = new Minefield(Difficulty.Custom);
+            var field = new Minefield();
 
             field.DisplayField();
         }
