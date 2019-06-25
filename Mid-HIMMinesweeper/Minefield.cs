@@ -37,6 +37,7 @@ namespace Mid_HIMMinesweeper
         {
             Field = new char[Height, Width];
             VisibleField = new char[Height, Width];
+
             var rand = new Random();
             for (var i = 0; i < MineCount; i++)
             {
@@ -51,21 +52,24 @@ namespace Mid_HIMMinesweeper
                     }
                 }
             }
-            for(var i=0; i<Field.GetLength(0); i++)
+            for (var i = 0; i < Field.GetLength(0); i++)
             {
-                for(var j=0;j<Field.GetLength(1); j++)
+                for (var j = 0; j < Field.GetLength(1); j++)
                 {
-                    if (Field[i,j] == '*') continue;
-                    Field[i,j] = CountNeighbors(i,j);
+                    if (Field[i, j] != '*')
+                    {
+                        Field[i, j] = CountNeighbors(i, j);
+                    }
+                    VisibleField[i, j] = '+';
                 }
             }
         }
         private Char CountNeighbors(int x, int y)
         {
             var counter = 0;
-            for(var i = -1; i <= 1; i++)
+            for (var i = -1; i <= 1; i++)
             {
-                for(var j = -1; j <= 1; j++)
+                for (var j = -1; j <= 1; j++)
                 {
                     if (x + i < 0 || x + i >= Field.GetLength(0) || y + j < 0 || y + j >= Field.GetLength(1) || (i == 0 && j == 0))
                     {
@@ -77,9 +81,9 @@ namespace Mid_HIMMinesweeper
                     }
                 }
             }
-            if(counter == 0)
+            if (counter == 0)
             {
-                return ' ';
+                return 'u';
             }
             else
             {
@@ -88,19 +92,42 @@ namespace Mid_HIMMinesweeper
         }
         public void DisplayField()
         {
-            Console.Write("  ");
+            Console.Write("  |");
             for (var j = 0; j < Field.GetLength(1); j++)
             {
                 Console.Write($" {Translator(j)}");
             }
+            Console.Write($"\n==+{new string('=', Field.GetLength(1) * 2)}");
             for (var i = 0; i < Field.GetLength(0); i++)
             {
-                Console.Write($"\n {Translator(i)}");
+                Console.Write($"\n {Translator(i)}|");
                 for (var j = 0; j < Field.GetLength(1); j++)
                 {
-                    Console.Write($" {Field[i, j]}");
+                    Console.Write($" {VisibleField[i, j]}");
                 }
             }
+        }
+        public void Reveal(int x, int y)
+        {
+            if (Field[x, y] == 'u')
+            {
+                Field[x, y] = ' ';
+                for (var i = -1; i <= 1; i++)
+                {
+                    for (var j = -1; j <= 1; j++)
+                    {
+                        if (x + i < 0 || x + i >= Field.GetLength(0) || y + j < 0 || y + j >= Field.GetLength(1) || (i == 0 && j == 0))
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            Reveal(x + i, y + j);
+                        }
+                    }
+                }
+            }
+            VisibleField[x, y] = Field[x, y];
         }
         private Char Translator(int input)
         {
